@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five Little Jungle Friends — 30 Second Animation</title>
+<style>
+  :root { --sky:#9be7ff; --green:#38a852; --deep:#176b3a; --sun:#ffe36e; --pink:#ff83b5; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#102b27; color:white; font-family:system-ui,-apple-system,Segoe UI,sans-serif; }
+  .app { width:min(100vw, 1280px); margin:0 auto; padding:14px; }
+  header { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+  h1 { font-size:clamp(18px,3vw,28px); margin:0; letter-spacing:.3px; }
+  .tag { font-size:12px; background:#245b45; padding:6px 10px; border-radius:99px; }
+  .stage { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:22px; background:linear-gradient(#8be2ff 0 48%,#c7f39a 48% 100%); box-shadow:0 18px 55px #0008; isolation:isolate; }
+  .sun { position:absolute; width:9%; aspect-ratio:1; border-radius:50%; background:var(--sun); top:7%; right:11%; box-shadow:0 0 45px #fff2a8; }
+  .cloud { position:absolute; top:14%; left:12%; width:15%; height:6%; background:#ffffffc9; border-radius:99px; filter:drop-shadow(0 5px 0 #ffffff55); animation:drift 16s linear infinite alternate; }
+  .cloud:before,.cloud:after { content:""; position:absolute; background:inherit; border-radius:50%; }
+  .cloud:before { width:40%; height:150%; left:18%; bottom:10%; }
+  .cloud:after { width:48%; height:190%; right:12%; bottom:0; }
+  .hill { position:absolute; bottom:18%; width:75%; height:38%; border-radius:50% 50% 0 0; background:#65c96a; z-index:-1; }
+  .hill.left { left:-18%; }.hill.right { right:-20%; background:#4eb65c; }
+  .ground { position:absolute; bottom:0; height:26%; width:100%; background:linear-gradient(#79d85d,#39a84b); }
+  .waterfall { position:absolute; right:7%; bottom:20%; width:16%; height:42%; background:linear-gradient(90deg,#8beaff,#e9ffff,#72d9ff); border-radius:48% 48% 10% 10%; opacity:.9; box-shadow:0 0 18px #d5fbff; }
+  .waterfall:after { content:""; position:absolute; bottom:-12%; left:-25%; width:150%; height:18%; background:#7de5ff; border-radius:50%; }
+  .tree { position:absolute; bottom:19%; width:8%; height:43%; background:#98582f; border-radius:35% 35% 8% 8%; }
+  .tree:before { content:""; position:absolute; width:230%; height:75%; left:-65%; top:-38%; border-radius:50%; background:#218e49; box-shadow:35px 8px 0 #2da957,-28px 18px 0 #39b85e; }
+  .tree.one { left:5%; }.tree.two { left:27%; transform:scale(.75); transform-origin:bottom; }
+  .flower { position:absolute; bottom:12%; font-size:clamp(16px,3vw,32px); animation:sway 2.2s ease-in-out infinite alternate; }
+  .f1{left:7%}.f2{left:20%;bottom:9%}.f3{right:23%}.f4{right:8%;bottom:10%}
+  .butterfly { position:absolute; font-size:clamp(17px,2.7vw,30px); animation:float 4s ease-in-out infinite; }
+  .b1{left:38%;top:25%}.b2{right:30%;top:18%;animation-delay:-1.7s}
+  .rainbow { position:absolute; width:34%; height:24%; right:0; top:24%; border-radius:50% 50% 0 0; border:10px solid transparent; border-top-color:#ff6b6b; border-left-color:#ffcf5c; border-right-color:#8b74ff; opacity:0; transform:scale(.8); transition:opacity .8s,transform .8s; }
+  .rainbow.show { opacity:.85; transform:scale(1); }
+  .characters { position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center; gap:1.4%; padding:0 7% 12%; }
+  .animal { position:relative; width:16%; max-width:150px; min-width:65px; text-align:center; transform-origin:bottom center; filter:drop-shadow(0 7px 2px #1d642b44); opacity:0; transform:translateY(50px) scale(.8); transition:opacity .5s,transform .5s; }
+  .animal.visible { opacity:1; transform:translateY(0) scale(1); }
+  .animal .emoji { display:block; font-size:clamp(42px,8vw,100px); line-height:1.12; }
+  .animal .name { display:inline-block; color:#174d2c; background:#fff9d9; border:2px solid #ffffff; border-radius:99px; padding:3px 9px; font-weight:800; font-size:clamp(10px,1.4vw,15px); }
+  .animal.dance { animation:dance .48s ease-in-out infinite alternate; }
+  .animal.bounce { animation:bounce .42s ease-in-out infinite alternate; }
+  .animal.wave .emoji { animation:wave .7s ease-in-out infinite alternate; }
+  .animal.spray:after { content:"💦"; position:absolute; left:55%; top:8%; font-size:clamp(18px,3vw,32px); animation:spray .6s ease-out infinite; }
+  .animal.swing { animation:swing .7s ease-in-out infinite alternate; }
+  .animal.wiggle { animation:wiggle .3s ease-in-out infinite alternate; }
+  .speech { position:absolute; top:5%; left:50%; transform:translateX(-50%); width:max-content; max-width:88%; text-align:center; color:#174b2c; background:#fffbe9ed; border:3px solid white; border-radius:18px; padding:8px 16px; font-size:clamp(14px,2.3vw,25px); font-weight:900; box-shadow:0 5px 0 #2b8d4a55; }
+  .scene-label { position:absolute; bottom:3%; left:50%; transform:translateX(-50%); color:#fff; text-shadow:0 2px 5px #14522d; font-weight:800; font-size:clamp(11px,1.5vw,16px); white-space:nowrap; }
+  .title-card { position:absolute; inset:0; display:grid; place-items:center; background:#0c5d39aa; opacity:0; pointer-events:none; transition:opacity .7s; }
+  .title-card.show { opacity:1; }
+  .title-card span { color:#fff36b; text-align:center; font-size:clamp(25px,6vw,68px); font-weight:1000; line-height:1.05; text-shadow:0 5px 0 #e66c37,0 9px 18px #123; padding:20px; }
+  .controls { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:12px; }
+  button { border:0; border-radius:999px; padding:11px 18px; background:#ffdf62; color:#20472c; font-weight:900; cursor:pointer; font-size:14px; }
+  button.secondary { background:#e9fff2; }
+  .progress-wrap { flex:1; min-width:130px; height:10px; border-radius:99px; background:#42665a; overflow:hidden; }
+  .progress { height:100%; width:0; background:#ffe36e; transition:width .1s linear; }
+  #time { font-variant-numeric:tabular-nums; font-size:13px; min-width:78px; text-align:right; }
+  .hint { color:#c7ddd2; font-size:12px; margin:9px 2px 0; line-height:1.5; }
+  @keyframes drift { to{transform:translateX(90px)} }
+  @keyframes sway { to{transform:rotate(12deg)} }
+  @keyframes float { 50%{transform:translate(15px,-18px) rotate(12deg)} }
+  @keyframes dance { to{transform:rotate(9deg) translateY(-12px)} }
+  @keyframes bounce { to{transform:translateY(-22px) rotate(-5deg)} }
+  @keyframes wave { to{transform:rotate(-12deg) scale(1.08)} }
+  @keyframes spray { 50%{transform:translate(22px,-18px) scale(1.3);opacity:.3} }
+  @keyframes swing { to{transform:rotate(13deg) translateY(-10px)} }
+  @keyframes wiggle { to{transform:rotate(8deg)} }
+  @media(max-width:600px){.app{padding:7px}.stage{border-radius:12px}.characters{gap:0;padding-left:2%;padding-right:2%;padding-bottom:13%}.animal{min-width:0;width:19%}.animal .name{padding:2px 5px}.speech{padding:5px 9px;border-width:2px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>🌴 Five Little Jungle Friends</h1>
+    <span class="tag">30-SECOND 3D-CARTOON-STYLE ANIMATION</span>
+  </header>
+
+  <main class="stage" id="stage" aria-label="Animated jungle scene">
+    <div class="sun"></div><div class="cloud"></div>
+    <div class="hill left"></div><div class="hill right"></div>
+    <div class="tree one"></div><div class="tree two"></div>
+    <div class="waterfall"></div><div class="rainbow" id="rainbow"></div>
+    <div class="ground"></div>
+    <div class="butterfly b1">🦋</div><div class="butterfly b2">🦋</div>
+    <div class="flower f1">🌺</div><div class="flower f2">🌼</div><div class="flower f3">🌸</div><div class="flower f4">🌻</div>
+    <div class="speech" id="lyrics">Welcome to the jungle!</div>
+    <div class="characters">
+      <div class="animal" id="ellie"><span class="emoji">🐘</span><span class="name">Ellie</span></div>
+      <div class="animal" id="leo"><span class="emoji">🦁</span><span class="name">Leo</span></div>
+      <div class="animal" id="momo"><span class="emoji">🐒</span><span class="name">Momo</span></div>
+      <div class="animal" id="gigi"><span class="emoji">🦒</span><span class="name">Gigi</span></div>
+      <div class="animal" id="benny"><span class="emoji">🐰</span><span class="name">Benny</span></div>
+    </div>
+    <div class="scene-label" id="sceneLabel">A happy day in the jungle</div>
+    <div class="title-card" id="titleCard"><span>FIVE LITTLE<br>JUNGLE FRIENDS!<br>🌈🐘🦁🐒🦒🐰</span></div>
+  </main>
+
+  <div class="controls">
+    <button id="playBtn">▶ Play animation</button>
+    <button id="restartBtn" class="secondary">↺ Restart</button>
+    <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+    <span id="time">0:00 / 0:30</span>
+  </div>
+  <p class="hint">Press Play to start the 30-second animation and original synthesized nursery-style tune. For a video file, record the stage in your browser or capture it with a screen recorder at 16:9.</p>
+</div>
+
+<script>
+(() => {
+  const DURATION = 30000;
+  const $ = id => document.getElementById(id);
+  const animals = ['ellie','leo','momo','gigi','benny'].map($);
+  const lyrics = $('lyrics'), label = $('sceneLabel'), rainbow = $('rainbow');
+  const title = $('titleCard'), progress = $('progress'), time = $('time');
+  let startedAt = 0, raf = 0, playing = false, audioCtx = null, melodyTimer = null;
+
+  const scenes = [
+    {start:0,end:6000,lyric:'Five little friends in the jungle green,\\nthe happiest friends you\\'ve ever seen!',label:'Scene 1 • Welcome to the jungle',visible:[0,1,2,3,4],moves:['wave','wave','wave','wave','wave']},
+    {start:6000,end:12000,lyric:'Elephant sprays, monkey swings,\\nlion dances, bunny springs!',label:'Scene 2 • Fun and games',visible:[0,1,2,4],moves:['spray','dance','swing','','bounce']},
+    {start:12000,end:18000,lyric:'Giraffe eats leaves, jump and play,\\nfive jungle friends dance all day!',label:'Scene 3 • Let’s jump and play',visible:[0,1,2,3,4],moves:['bounce','bounce','bounce','wiggle','bounce']},
+    {start:18000,end:25000,lyric:'Clap your hands and stomp your feet,\\njungle friends make life so sweet!',label:'Scene 4 • The big jungle dance',visible:[0,1,2,3,4],moves:['dance','dance','wiggle','dance','bounce'],rainbow:true},
+    {start:25000,end:30000,lyric:'Come and play another day!\\nGoodbye, friends! Hooray, hooray!',label:'Scene 5 • Goodbye, little friends',visible:[0,1,2,3,4],moves:['wave','wave','wave','wave','wave'],rainbow:true,title:true}
+  ];
+
+  function setScene(ms) {
+    const scene = scenes.find(s => ms >= s.start && ms < s.end) || scenes[4];
+    lyrics.innerHTML = scene.lyric.replace(/\n/g,'<br>');
+    label.textContent = scene.label;
+    rainbow.classList.toggle('show', !!scene.rainbow);
+    title.classList.toggle('show', !!scene.title);
+    animals.forEach((animal,i) => {
+      animal.className = 'animal';
+      if (scene.visible.includes(i)) animal.classList.add('visible');
+      if (scene.moves[i]) animal.classList.add(scene.moves[i]);
+    });
+  }
+
+  // A small original, cheerful pentatonic tune generated locally with Web Audio.
+  function startMusic() {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      audioCtx = new AudioContext();
+      const notes = [523.25,659.25,783.99,659.25,587.33,659.25,523.25,392.00,
+                     523.25,659.25,783.99,880.00,783.99,659.25,523.25,440.00];
+      let n = 0;
+      const playNote = () => {
+        if (!playing || !audioCtx) return;
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.type = 'sine'; osc.frequency.value = notes[n++ % notes.length];
+        gain.gain.setValueAtTime(0.0001,audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.07,audioCtx.currentTime+0.025);
+        gain.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.28);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime+0.3);
+        melodyTimer = setTimeout(playNote, 300);
+      };
+      playNote();
+    } catch(e) { /* Animation still works if audio is unavailable. */ }
+  }
+
+  function stopMusic() {
+    if (melodyTimer) clearTimeout(melodyTimer);
+    melodyTimer = null;
+    if (audioCtx) { audioCtx.close().catch(()=>{}); audioCtx = null; }
+  }
+
+  function tick(now) {
+    if (!playing) return;
+    const elapsed = Math.min(now-startedAt,DURATION);
+    setScene(elapsed);
+    progress.style.width = (elapsed/DURATION*100)+'%';
+    const sec = Math.floor(elapsed/1000);
+    time.textContent = `0:${String(sec).padStart(2,'0')} / 0:30`;
+    if (elapsed >= DURATION) {
+      playing = false; cancelAnimationFrame(raf); stopMusic();
+      $('playBtn').textContent = '▶ Play again';
+      return;
+    }
+    raf = requestAnimationFrame(tick);
+  }
+
+  function play() {
+    if (playing) return;
+    if (progress.style.width === '100%') reset();
+    playing = true;
+    startedAt = performance.now() - (parseFloat(progress.style.width)||0)/100*DURATION;
+    $('playBtn').textContent = 'Ⅱ Playing';
+    startMusic();
+    raf = requestAnimationFrame(tick);
+  }
+
+  function reset() {
+    playing = false; cancelAnimationFrame(raf); stopMusic();
+    progress.style.width = '0%'; time.textContent = '0:00 / 0:30';
+    title.classList.remove('show'); rainbow.classList.remove('show');
+    animals.forEach(a => a.className='animal');
+    lyrics.textContent='Welcome to the jungle!';
+    label.textContent='A happy day in the jungle';
+    $('playBtn').textContent='▶ Play animation';
+  }
+
+  $('playBtn').addEventListener('click',play);
+  $('restartBtn').addEventListener('click',()=>{reset();play();});
+  setScene(0);
+})();
+</script>
+</body>
+</html>
